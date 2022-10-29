@@ -1,0 +1,91 @@
+version: '3.9'
+
+services:
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    container_name: zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - '2181:2181'
+  
+  kafka:
+    image: 'bitnami/kafka:latest'
+    container_name: kafka
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+    ports:
+      - '9092:9092'
+    restart: always
+    depends_on:
+      - zookeeper
+    command: sh -c "((sleep 10 && kafka-topics.sh --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 2 --topic ventas && kafka-topics.sh --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 2 --topic stock && kafka-topics.sh --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 2 --topic miembros && kafka-topics.sh --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 2 --topic coordenadas)&)&& /opt/bitnami/scripts/kafka/entrypoint.sh /run.sh"
+  
+  producer:
+    container_name: producer
+    build: ./Producer
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+
+  consumer-usuarios:
+    container_name: consumer-usuarios
+    build: ./nuevosMiembros
+    ports:
+      - "5000:5000"
+    restart: always
+    depends_on:
+      - kafka
+      - producer
+
+  consumer-stock:
+    container_name: consumer-stock
+    build: ./stock
+    ports:
+      - "5001:5001"
+    restart: always
+    depends_on:
+      - kafka
+      - producer
+
+  consumer-coordenadas:
+    container_name: consumer-coordenadas
+    build: ./coordenadas
+    ports:
+      - "5002:5002"
+    restart: always
+    depends_on:
+      - kafka
+      - producer
+  
+  consumer-ventas:
+    container_name: consumer-ventas
+    build: ./ventas
+    ports:
+      - "5003:5003"
+    restart: always
+    depends_on:
+      - kafka
+      - producer
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=tarea2
+      - TZ=America/Santiago
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql

@@ -1,0 +1,197 @@
+#NODEJS GITIGNORE
+
+#build
+
+/dist
+
+#dependencies
+
+/node_modules
+
+#debug
+
+npm-debug.log
+
+yarn-debug.log
+
+yarn-error.log
+
+#local env files
+
+.env.local
+
+.env.*.local
+
+#production
+
+/build
+
+#misc
+
+.DS_Store
+
+.env
+
+.env.development
+
+.env.test
+
+.env.production
+
+#yarn
+
+.yarn-integrity
+
+# Editors
+
+.vscode
+
+# IDEs and editors
+
+.idea
+
+*.iml
+
+*.swp
+
+*.swo
+
+# misc
+
+.DS_Store
+
+npm-debug.log*
+
+yarn-debug.log*
+
+yarn-error.log*
+
+# Dependency directories
+
+node_modules/
+
+yarn.lock
+
+# Output files
+
+dist
+
+# Yarn Integrity file
+
+.yarn-integrity
+
+# dotenv environment variables file
+
+.env
+
+# next.js build output
+
+.next
+
+# nuxt.js build / generate output
+
+.nuxt
+
+# vuepress build output
+
+.vuepress/dist
+
+# Serverless directories
+
+.serverless/
+
+# FuseBox cache
+
+.fusebox/
+
+# DynamoDB Local files
+
+.dynamodb/
+
+# TernJS port file
+
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+
+.vscode-test
+
+# yarn v2
+
+.yarn/cache
+
+.yarn/unplugged
+
+.yarn/build-state.yml
+
+.yarn/install-state.gz
+
+.pnp.*
+
+# End of https://www.gitignore.io/api/node
+
+# https://www.gitignore.io/api/visualstudiocode
+
+### VisualStudioCode ###
+
+.vscode/*
+
+!.vscode/settings.json
+
+!.vscode/tasks.json
+
+!.vscode/launch.json
+
+!.vscode/extensions.json
+
+*.code-workspace
+
+# End of https://www.gitignore.io/api/visualstudiocode
+
+# https://www.gitignore.io/api/visualstudio
+
+### VisualStudio ###
+
+# User-specific files
+
+*.suo
+
+*.user
+
+*.userosscache
+
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+
+*.userprefs
+
+# Mono auto generated files
+
+mono_crash.*
+
+# Build results
+
+[Bb]in/
+
+[Oo]bj/
+
+[Ll]og/
+
+# Visual Studio 2015/2017 cache/options directory
+
+.vs/
+
+# Visual Studio 2017 auto generated files
+
+Generated\ Files/
+
+# MSTest test Results
+
+[Tt]est[Rr]esult*/
+
+[Bb]uild[Ll]og.*
+
+# NUnit
+
+*.VisualState.xml
