@@ -24,9 +24,6 @@ var kafka = new Kafka({
   brokers: ["kafka:9092"],
 });
 
-var miembrosP = [];
-var miembrosN = [];
-
 const main = async () => {
   const consumer = kafka.consumer({ groupId: "miembros" });
   await consumer.connect();
@@ -34,30 +31,9 @@ const main = async () => {
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      if(partition == 1)
-      {
-        var miembro = JSON.parse(message.value.toString());
-        miembrosP.push(miembro);
-        console.log("Nuevo miembro premium registrado")
-        console.log("Miembros Premium:" , miembrosP.length)
-        if(miembrosP.length > 0)
-        {
-          console.log(miembrosP)
-        }
-      }
-      else if(partition == 0)
-      {
-        var miembro = JSON.parse(message.value.toString());
-        miembrosN.push(miembro);
-        console.log("Nuevo miembro registrado")
-        console.log("Miembros:" ,miembrosN.length)
-        if(miembrosN.length > 0 )
-        {
-          console.log(miembrosN)
-        }
-      }
-      
-
+      var miembro = JSON.parse(message.value.toString());
+      if(partition == 0){console.log("Nuevo miembro registrado: "+ miembro['nombre']+ " " + miembro['apellido']);}
+      else{console.log("Nuevo miembro premium registrado: "+ miembro['nombre']+ " " + miembro['apellido'])}
     },
   })
 }

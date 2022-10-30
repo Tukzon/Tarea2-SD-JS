@@ -29,13 +29,6 @@ app.post("/newMember", (req, res) => {(async () => {
         res.status(400).send("No input data provided");
         return;
     }
-    //client.query("SELECT * FROM miembros WHERE rut = $1", [req.body.rut], (err, result) => {
-    //    num_rows = result.rowCount;
-    //})
-    //if (await num_rows > 0) {
-    //    res.status(400).send("Miembro ya existe");
-    //    return;
-    //}
     await pool.query("INSERT INTO miembros (nombre, apellido, rut, correo, patente, premium, stock) VALUES ($1, $2, $3, $4, $5, $6, $7)", [req.body.nombre, req.body.apellido, req.body.rut, req.body.correo, req.body.patente, req.body.premium, req.body.stock]);
     const producer = kafka.producer();
     await producer.connect();
@@ -50,12 +43,12 @@ app.post("/newMember", (req, res) => {(async () => {
         stock: stock
     }
     value = JSON.stringify(miembro);
-    if(miembro["premium"] == 1){
+    if(!miembro["premium"]){
         const topicMessages = [
         {
             topic: 'miembros',
-            partition : 1,
-            messages: [{value: JSON.stringify(miembro), partition: 1}]
+            partition : 0,
+            messages: [{value: JSON.stringify(miembro), partition: 0}]
         },
         ]
         await producer.sendBatch({ topicMessages })
@@ -64,7 +57,7 @@ app.post("/newMember", (req, res) => {(async () => {
         const topicMessages = [
         {
             topic: 'miembros',
-            messages: [{value: JSON.stringify(miembro), partition: 0}]
+            messages: [{value: JSON.stringify(miembro), partition: 1}]
         },
         ]
         await producer.sendBatch({ topicMessages })

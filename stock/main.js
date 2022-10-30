@@ -38,9 +38,9 @@ const main = async () => {
         
         resStock = await pool.query("SELECT stock FROM miembros WHERE patente = $1", [value['patente']])
         stock = resStock.rows[0]['stock']
-        if(stock - value["cantidad"] < 20 ){
+        if(stock - value["cantidad"] < 20 && !low_stock.includes(value['patente'])){
           low_stock.push(value['patente']);
-          console.log("Stock bajo para la patente: " + value['patente']);
+          //console.log("Stock bajo para la patente: " + value['patente']);
         }
         if(low_stock.length == 5){
           console.log("Stock bajo para las patentes: " + low_stock);
