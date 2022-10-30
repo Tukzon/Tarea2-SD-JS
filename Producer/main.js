@@ -83,8 +83,6 @@ app.post("/newVenta", (req, res) => {(async () => {
         return;
     }
     await pool.query("INSERT INTO ventas (patente,cliente, cantidad, ubicacion) VALUES ($1, $2, $3, $4)", [req.body.patente, req.body.cliente, req.body.cantidad, req.body.ubicacion]);
-    await pool.query("UPDATE miembros SET stock = stock - $1 WHERE patente = $2", [req.body.cantidad, req.body.patente]);
-    
     const producer = kafka.producer();
     await producer.connect();
     const { patente, cliente, cantidad, ubicacion } = req.body;
