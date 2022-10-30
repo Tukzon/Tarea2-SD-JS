@@ -3,8 +3,8 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const { Kafka } = require("kafkajs");
 
-const { Client } = require('pg')
-const client = new Client({
+const pg = require('pg');
+const pool = new pg.Pool({
     user: 'postgres',
     host: 'postgres',
     database: 'tarea2',
@@ -24,7 +24,7 @@ var kafka = new Kafka({
   brokers: ["kafka:9092"],
 });
 
-var stock = [];
+var low_stock = [];
 
 const main = async () => {
 
@@ -34,21 +34,23 @@ const main = async () => {
 
   await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        var algo = JSON.parse(message.value.toString());
-
-        if(algo["stock"] <= 5){
-          console.log("Stock MENOR A 5, SE AGREGA A LA COLA DE MENSAJE PARA NOTIFICAR");
-          stock.push(algo["patente"]);
-          console.log("TAMAÑO DEL ARREGLO, ES DECIR CUANTOS SE HAN METIDO " + stock.length);
+        var value = JSON.parse(message.value.toString());
+        
+        resStock = await pool.query("SELECT stock FROM miembros WHERE patente = $1", [value['patente']])
+        stock = resStock.rows[0]['stock']
+        if(stock - value["cantidad"] < 20 ){
+          low_stock.push(value['patente']);
+          console.log("Stock bajo para la patente: " + value['patente']);
         }
-        if(stock.length == 5){
-          console.log("LA COLA DE NOTIFICACION ESTA LLENA, SE PROCEDE A MOSTRAR LOS CARRITOS CON FALTA ADE SOPAIPILLAS");
-          console.log("Patente de los carritos: "+stock+" con falta de sopapillas");
-          stock = [];
+        if(low_stock.length == 5){
+          console.log("Stock bajo para las patentes: " + low_stock);
+          await pool.query("UPDATE miembros SET stock = 30 WHERE patente in ($1,$2,$3,$4,$5)", (low_stock));
+          console.log("SE HA AÑADIDO STOCK AUTOMATICAMENTE A LAS PATENTES: " + low_stock + " A 30 UNIDADES");
+          low_stock = [];
         }
-      },
-    })
-};
+        await pool.query("UPDATE miembros SET stock = stock - $1 WHERE patente = $2", [value['cantidad'], value['patente']]);
+        }})
+    };
 
 app.listen(5001,'0.0.0.0',()=>{
     main()

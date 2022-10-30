@@ -35,7 +35,7 @@ const main = async () => {
 }
 
 setInterval(function(){
-  if(tiempo == 0 && carrito != {}){
+  if(tiempo == 0 && carrito != undefined){
     console.log("Se ha eliminado el carrito: ", carrito['patente'])
     carrito = {}
     tiempo = -1

@@ -85,13 +85,6 @@ app.post("/newVenta", (req, res) => {(async () => {
     await pool.query("INSERT INTO ventas (patente,cliente, cantidad, ubicacion) VALUES ($1, $2, $3, $4)", [req.body.patente, req.body.cliente, req.body.cantidad, req.body.ubicacion]);
     await pool.query("UPDATE miembros SET stock = stock - $1 WHERE patente = $2", [req.body.cantidad, req.body.patente]);
     
-    //client.query("SELECT stock FROM miembros WHERE patente = $1", [req.body.patente], (err, result) => {
-    //    stock = result.rows[0].stock;
-    //})
-    //if (stock < req.body.cantidad) {
-    //    res.status(400).send("Stock insuficiente");
-    //    return;
-    //}
     const producer = kafka.producer();
     await producer.connect();
     const { patente, cliente, cantidad, ubicacion } = req.body;
