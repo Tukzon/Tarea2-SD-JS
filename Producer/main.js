@@ -136,31 +136,23 @@ app.post("/carritoProfugo", (req, res) => {(async () => {
     let localizacion = {
         patente: patente,
         ubicacion: ubicacion,
-        reporte: reporte
+    }
+    valido = await pool.query("SELECT * FROM miembros WHERE patente = $1", [patente]);
+    if(valido.rowCount == 0){
+        res.status(400).send("Patente no existe");
+        return;   
     }
     value = JSON.stringify(localizacion)
-
-    if(localizacion["reporte"] == 1){
-        const topicMessages = [
-        {
-            topic: 'coordenadas',
-            partition : 1,
-            messages: [{value: JSON.stringify(localizacion), partition: 1}]
-        },
+    const topicMessages = [
+    {
+        topic: 'coordenadas',
+        partition : 1,
+        messages: [{value: JSON.stringify(localizacion), partition: 1}]
+    },
     ]
     await producer.sendBatch({ topicMessages })
-    }else{
-        const topicMessages = [
-        {
-            topic: 'coordenadas',
-            partition: 0,
-            messages: [{value: JSON.stringify(localizacion), partition: 0}]
-        },
-    ]
-    await producer.sendBatch({ topicMessages })
-    }
     await producer.disconnect();
-    res.json(localizacion);
+    res.json("Carrito denunciado como profugo");
     })();
 });
 
