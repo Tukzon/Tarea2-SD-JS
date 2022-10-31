@@ -32,7 +32,7 @@ To deploy this project run
 #### Ingresar Nuevo Miembro
 
 ```http
-  POST localhost:8000/NuevoMiembro
+  POST localhost:8000/newMember
 ```
 
 ```json
@@ -48,7 +48,7 @@ To deploy this project run
 ```
 
 ```http
-POST localhost:8000/NuevaVenta
+POST localhost:8000/newVenta
 ```
 ```json
 {
@@ -60,7 +60,7 @@ POST localhost:8000/NuevaVenta
 ```
 
 ```http
-POST localhost:8000/CarritoProfugo
+POST localhost:8000/carritoProfugo
 
 ```
 ```json
