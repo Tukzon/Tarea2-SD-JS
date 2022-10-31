@@ -47,6 +47,8 @@ To deploy this project run
 }
 ```
 
+#### Ingresar Nueva Venta
+
 ```http
 POST localhost:8000/newVenta
 ```
@@ -58,7 +60,7 @@ POST localhost:8000/newVenta
     "ubicacion": "-33.452607772695686, -70.66136977581571"
 }
 ```
-
+#### Ingresar Carrito Profugo
 ```http
 POST localhost:8000/carritoProfugo
 
